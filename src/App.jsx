@@ -1,9 +1,13 @@
 import { useState } from "react"
+import Input from "./components/Input"
 
 function App() {
   const [password, setPassword] = useState("")
+  const [customSize, setCustomSize] = useState(12)
+  const [showInput, setShowInput] = useState(false)
   const [copyText, setCopyText] = useState("Copiar")
-  const [passwordSize, setPasswordSize] = useState(12)
+
+  const passwordSize = showInput ? customSize : 8
 
   function generatePassword() {
     const newPassword = Math.random().toString(36).slice(-passwordSize);
@@ -11,29 +15,33 @@ function App() {
     setCopyText("Copiar")
   }
 
-  function copyToClioboard() {
+  function copyToClipboard() {
     navigator.clipboard.writeText(password)
     setCopyText("Copiado!")
   }
 
   return (
-    <div className="app">
-      <h1>Gerador de Senha</h1>
+    <div>
+      <h1>Gerador de senhas</h1>
       <div>
-        <label htmlFor="passwordSize">Tamanho: </label>
+        <label htmlFor="showInput">Customizar tamanho:</label>
         <input
-          type="number"
-          id="passwordSize"
-          min={1}
-          value={passwordSize}
-          onChange={(ev)=> setPasswordSize(ev.target.value) }
+          type="checkbox"
+          id="showInput"
+          value={showInput}
+          onChange={() => setShowInput(currentState => !currentState)}
         />
       </div>
+      {showInput && (
+        <div>
+          <label htmlFor="customSize">Tamanho: </label>
+          <Input passwordSize={customSize} setPasswordSize={setCustomSize} />
+        </div>
+      )}
       <button onClick={generatePassword}>Gerar senha de {passwordSize} caracteres</button>
-      <button onClick={copyToClioboard}>{copyText}</button>
+      <button onClick={copyToClipboard}>{copyText}</button>
       <div>Sua senha segura: {password}</div>
     </div>
-
   )
 }
 
